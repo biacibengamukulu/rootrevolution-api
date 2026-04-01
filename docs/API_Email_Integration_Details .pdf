@@ -1,0 +1,444 @@
+%PDF-1.3
+%ºß¬à
+3 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 4 0 R
+>>
+endobj
+4 0 obj
+<<
+/Length 4048
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F2 18 Tf
+20.6999999999999993 TL
+0 g
+42.5196850393700814 785.1970866141732586 Td
+(Email Integration Implementation) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+42.5196850393700814 742.6774015748030706 Td
+(1. API Endpoint) Tj
+ET
+0.96 g
+36.8503937007874072 734.1734645669290558 521.5748031496063959 -24.0944881889763813 re
+f
+BT
+/F5 9 Tf
+10.3499999999999996 TL
+0 g
+42.5196850393700814 722.8348818897637784 Td
+(POST https://cloudcalls.easipath.com/backend-biatechmailling/api/send-mail/post/within-org) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+42.5196850393700814 693.0711023622046696 Td
+(2. Request Headers) Tj
+ET
+0.96 g
+36.8503937007874072 684.5671653543306547 521.5748031496063959 -24.0944881889763813 re
+f
+BT
+/F5 9 Tf
+10.3499999999999996 TL
+0 g
+42.5196850393700814 673.2285826771653774 Td
+({ "Content-Type": "application/json" }) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+42.5196850393700814 643.4648031496062686 Td
+(3. Payload Structure) Tj
+ET
+0.96 g
+36.8503937007874072 634.9608661417322537 521.5748031496063959 -113.3858267716535551 re
+f
+BT
+/F5 9 Tf
+10.3499999999999996 TL
+0 g
+42.5196850393700814 623.6222834645668627 Td
+({) Tj
+T* (  "org": "string",       // Organization code, always "CM001") Tj
+T* (  "from": "string",      // Sender display name, e.g. "Mentor Tracker System") Tj
+T* (  "name": "string",      // Notification type, e.g. "System Notification") Tj
+T* (  "email": "string",     // Recipient email address) Tj
+T* (  "subject": "string",   // Email subject line) Tj
+T* (  "message": "string"    // HTML email body \(full HTML with inline styles\)) Tj
+T* (}) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+42.5196850393700814 504.5671653543306547 Td
+(4. Example Request) Tj
+ET
+0.96 g
+36.8503937007874072 496.0632283464566399 521.5748031496063959 -177.1653543307086807 re
+f
+BT
+/F5 9 Tf
+10.3499999999999996 TL
+0 g
+42.5196850393700814 484.7246456692913057 Td
+(fetch\('https://cloudcalls.easipath.com/backend-biatechmailling/api/send-mail/post/within-org',) Tj
+T* ({) Tj
+T* (  method: 'POST',) Tj
+T* (  headers: { 'Content-Type': 'application/json' },) Tj
+T* (  body: JSON.stringify\({) Tj
+T* (    org: "CM001",) Tj
+T* (    from: "Mentor Tracker System",) Tj
+T* (    name: "System Notification",) Tj
+T* (    email: "recipient@example.com",) Tj
+T* (    subject: "New Request Notification",) Tj
+T* (    message: "<html><body><h2>Hello</h2><p>Message here</p></body></html>") Tj
+T* (  }\)) Tj
+T* (}\);) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+42.5196850393700814 301.8899999999999864 Td
+(5. Region Manager Lookup \(Dynamic Recipients\)) Tj
+ET
+0.96 g
+36.8503937007874072 293.3860629921259147 521.5748031496063959 -24.0944881889763813 re
+f
+BT
+/F5 9 Tf
+10.3499999999999996 TL
+0 g
+42.5196850393700814 282.0474803149605805 Td
+(GET https://cloudcalls.easipath.com/backend-fsdirectmentortracker/api/super_user/get/all) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+42.5196850393700814 252.2837007874014716 Td
+(Response: { "results": [...] } — each super user has regionCode, email, name fields. Filter by the mentor's) Tj
+T* (regionCode to get the correct managers.) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+42.5196850393700814 215.4333070866141497 Td
+(6. Current Notification Flows) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+42.5196850393700814 195.5907874015747439 Td
+(1. Deviation Request — sends to all region managers matching the mentor's region + monitoring copy to) Tj
+T* (imbani16@gmail.com) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+42.5196850393700814 158.7403937007873083 Td
+(2. Unavailability Request — same routing as deviation requests) Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+42.5196850393700814 136.0632283464566399 Td
+(7. Key Rules) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+42.5196850393700814 116.220708661417234 Td
+(• Always send a monitoring copy to imbani16@gmail.com with extra metadata \(mentor ID, region, which managers) Tj
+T* (were notified\)) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+42.5196850393700814 79.3703149606297984 Td
+(• The "message" field supports full HTML with inline CSS \(no external stylesheets\)) Tj
+ET
+endstream
+endobj
+5 0 obj
+<</Type /Page
+/Parent 1 0 R
+/Resources 2 0 R
+/MediaBox [0 0 595.2799999999999727 841.8899999999999864]
+/Contents 6 0 R
+>>
+endobj
+6 0 obj
+<<
+/Length 625
+>>
+stream
+0.5670000000000001 w
+0 G
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+42.5196850393700814 785.1970866141732586 Td
+(• Subject line for monitoring copies is prefixed with [COPY]) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+42.5196850393700814 762.5199212598424765 Td
+(• All emails use org: "CM001") Tj
+ET
+BT
+/F2 13 Tf
+14.9499999999999993 TL
+0 g
+42.5196850393700814 739.8427559055118081 Td
+(8. Implementation File) Tj
+ET
+BT
+/F1 10 Tf
+11.5 TL
+0 g
+42.5196850393700814 720.0002362204724022 Td
+(src/services/emailService.ts — contains the EmailService class with sendEmail\(\), notifyDeviationRequest\(\), and) Tj
+T* (notifyUnavailabilityRequest\(\) methods.) Tj
+ET
+endstream
+endobj
+1 0 obj
+<</Type /Pages
+/Kids [3 0 R 5 0 R ]
+/Count 2
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/BaseFont /Helvetica-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+11 0 obj
+<<
+/Type /Font
+/BaseFont /Courier
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+12 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+13 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-Oblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+14 0 obj
+<<
+/Type /Font
+/BaseFont /Courier-BoldOblique
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+15 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Roman
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+16 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Bold
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+17 0 obj
+<<
+/Type /Font
+/BaseFont /Times-Italic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+18 0 obj
+<<
+/Type /Font
+/BaseFont /Times-BoldItalic
+/Subtype /Type1
+/Encoding /WinAnsiEncoding
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+19 0 obj
+<<
+/Type /Font
+/BaseFont /ZapfDingbats
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+20 0 obj
+<<
+/Type /Font
+/BaseFont /Symbol
+/Subtype /Type1
+/FirstChar 32
+/LastChar 255
+>>
+endobj
+2 0 obj
+<<
+/ProcSet [/PDF /Text /ImageB /ImageC /ImageI]
+/Font <<
+/F1 7 0 R
+/F2 8 0 R
+/F3 9 0 R
+/F4 10 0 R
+/F5 11 0 R
+/F6 12 0 R
+/F7 13 0 R
+/F8 14 0 R
+/F9 15 0 R
+/F10 16 0 R
+/F11 17 0 R
+/F12 18 0 R
+/F13 19 0 R
+/F14 20 0 R
+>>
+/XObject <<
+>>
+>>
+endobj
+21 0 obj
+<<
+/Producer (jsPDF 3.0.3)
+/CreationDate (D:20260311191648+02'00')
+>>
+endobj
+22 0 obj
+<<
+/Type /Catalog
+/Pages 1 0 R
+/OpenAction [3 0 R /FitH null]
+/PageLayout /OneColumn
+>>
+endobj
+xref
+0 23
+0000000000 65535 f 
+0000005065 00000 n 
+0000006890 00000 n 
+0000000015 00000 n 
+0000000152 00000 n 
+0000004252 00000 n 
+0000004389 00000 n 
+0000005128 00000 n 
+0000005253 00000 n 
+0000005383 00000 n 
+0000005516 00000 n 
+0000005654 00000 n 
+0000005778 00000 n 
+0000005907 00000 n 
+0000006039 00000 n 
+0000006175 00000 n 
+0000006303 00000 n 
+0000006430 00000 n 
+0000006559 00000 n 
+0000006692 00000 n 
+0000006794 00000 n 
+0000007140 00000 n 
+0000007226 00000 n 
+trailer
+<<
+/Size 23
+/Root 22 0 R
+/Info 21 0 R
+/ID [ <ABBB3355AE12C15F5FCAC6330D7D630E> <ABBB3355AE12C15F5FCAC6330D7D630E> ]
+>>
+startxref
+7330
+%%EOF
