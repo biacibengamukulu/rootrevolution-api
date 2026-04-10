@@ -58,12 +58,12 @@ func Load() *Config {
 
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
-		jwtSecret = "rootrevolution-secret-key-2025"
+		jwtSecret = "rootrevolution-secret-key-2025-HYIEHE736362373785LK444dd4"
 	}
 
 	ownerEmail := os.Getenv("OWNER_EMAIL")
 	if ownerEmail == "" {
-		ownerEmail = "biacibenga@gmail.com"
+		ownerEmail = "denise.cochrane78@gmail.com"
 	}
 
 	baseURL := os.Getenv("BASE_URL")

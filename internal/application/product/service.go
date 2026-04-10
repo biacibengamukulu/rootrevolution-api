@@ -205,6 +205,66 @@ func (s *Service) DeleteProduct(id int, requestedBy string) (string, error) {
 	return pu.Token.String(), nil
 }
 
+// ListPending returns all pending updates waiting for authorization
+func (s *Service) ListPending() ([]*pending.PendingUpdate, error) {
+	return s.pendingRepo.FindAllPending(s.cfg.App.Org)
+}
+
+// ForceAuthorize applies a pending change regardless of expiry — admin use only
+func (s *Service) ForceAuthorize(tokenStr string) (*product.Product, error) {
+	token, err := uuid.Parse(tokenStr)
+	if err != nil {
+		return nil, fmt.Errorf("invalid authorization token")
+	}
+
+	pu, err := s.pendingRepo.FindByToken(token)
+	if err != nil {
+		return nil, fmt.Errorf("finding pending update: %w", err)
+	}
+	if pu == nil {
+		return nil, fmt.Errorf("authorization token not found")
+	}
+	if pu.Status == pending.StatusApproved {
+		return nil, fmt.Errorf("already approved")
+	}
+
+	var result *product.Product
+
+	switch pu.Action {
+	case "create":
+		var p product.Product
+		if err := json.Unmarshal([]byte(pu.UpdateData), &p); err != nil {
+			return nil, fmt.Errorf("parsing product data: %w", err)
+		}
+		if err := s.productRepo.Save(&p); err != nil {
+			return nil, fmt.Errorf("creating product: %w", err)
+		}
+		result = &p
+
+	case "update":
+		var p product.Product
+		if err := json.Unmarshal([]byte(pu.UpdateData), &p); err != nil {
+			return nil, fmt.Errorf("parsing product data: %w", err)
+		}
+		if err := s.productRepo.Update(&p); err != nil {
+			return nil, fmt.Errorf("updating product: %w", err)
+		}
+		result = &p
+
+	case "delete":
+		if err := s.productRepo.Delete(pu.Org, pu.ProductID); err != nil {
+			return nil, fmt.Errorf("deleting product: %w", err)
+		}
+		result = &product.Product{ID: pu.ProductID, Org: pu.Org, Status: "deleted"}
+
+	default:
+		return nil, fmt.Errorf("unknown action: %s", pu.Action)
+	}
+
+	_ = s.pendingRepo.UpdateStatus(pu.Token, pending.StatusApproved)
+	return result, nil
+}
+
 // AuthorizeUpdate applies the pending change once the owner clicks the email link
 func (s *Service) AuthorizeUpdate(tokenStr string) (*product.Product, error) {
 	token, err := uuid.Parse(tokenStr)

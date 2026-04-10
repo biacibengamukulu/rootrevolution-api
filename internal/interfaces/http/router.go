@@ -43,6 +43,10 @@ func SetupRoutes(
 	// Public - product authorization link (must be before /:id to avoid conflict)
 	products.Get("/authorize/:token", productHandler.AuthorizeUpdate)
 
+	// Admin only - pending updates management
+	products.Get("/pending", authMiddleware.Required(), authMiddleware.AdminOnly(), productHandler.ListPending)
+	products.Post("/pending/:token/approve", authMiddleware.Required(), authMiddleware.AdminOnly(), productHandler.ForceAuthorize)
+
 	// Public - read operations
 	products.Get("/", productHandler.ListProducts)
 	products.Get("/:id", productHandler.GetProduct)

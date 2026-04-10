@@ -17,7 +17,7 @@ services:
       CASSANDRA_PASSWORD: ${CASSANDRA_PASSWORD:-}
       CASSANDRA_USE_SSL: ${CASSANDRA_USE_SSL:-false}
       JWT_SECRET: ${JWT_SECRET:-rootrevolution-secret-key-change-in-production}
-      BASE_URL: ${BASE_URL:-https://safer.easipath.com}
+      BASE_URL: ${BASE_URL:-https://cloudcalls.easipath.com}
       OWNER_EMAIL: ${OWNER_EMAIL:-biacibenga@gmail.com}
     volumes:
       - ./mockup:/app/mockup:ro

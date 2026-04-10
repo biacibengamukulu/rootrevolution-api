@@ -168,6 +168,44 @@ func (h *ProductHandler) DeleteProduct(c *fiber.Ctx) error {
 	})
 }
 
+// ListPending godoc
+// GET /backend_rootrevolution/api/products/pending
+// Admin only — returns all pending updates waiting for authorization
+func (h *ProductHandler) ListPending(c *fiber.Ctx) error {
+	items, err := h.svc.ListPending()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to retrieve pending updates",
+		})
+	}
+
+	if items == nil {
+		return c.JSON(fiber.Map{"data": []interface{}{}, "total": 0})
+	}
+
+	return c.JSON(fiber.Map{"data": items, "total": len(items)})
+}
+
+// ForceAuthorize godoc
+// POST /backend_rootrevolution/api/products/pending/:token/approve
+// Admin only — approves a pending update even if the email link has expired
+func (h *ProductHandler) ForceAuthorize(c *fiber.Ctx) error {
+	token := c.Params("token")
+	if token == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Missing token"})
+	}
+
+	result, err := h.svc.ForceAuthorize(token)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Product change approved successfully",
+		"data":    result,
+	})
+}
+
 // AuthorizeUpdate godoc
 // GET /backend_rootrevolution/api/products/authorize/:token
 // Public - called when owner clicks email link

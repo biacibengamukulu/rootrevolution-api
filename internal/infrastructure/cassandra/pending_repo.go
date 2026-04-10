@@ -50,6 +50,35 @@ func (r *pendingRepository) FindByToken(token uuid.UUID) (*pending.PendingUpdate
 	return &p, nil
 }
 
+func (r *pendingRepository) FindAllPending(org string) ([]*pending.PendingUpdate, error) {
+	iter := r.session.Query(`SELECT auth_token, product_id, org, update_data, requested_by,
+		created_at, expires_at, status, action
+		FROM pending_updates WHERE org = ? AND status = ? ALLOW FILTERING`,
+		org, string(pending.StatusPending)).Iter()
+
+	var results []*pending.PendingUpdate
+	var statusStr string
+	var gid gocql.UUID
+	var p pending.PendingUpdate
+
+	for iter.Scan(&gid, &p.ProductID, &p.Org, &p.UpdateData, &p.RequestedBy,
+		&p.CreatedAt, &p.ExpiresAt, &statusStr, &p.Action) {
+		p.Token = uuid.UUID(gid)
+		p.Status = pending.UpdateStatus(statusStr)
+		cp := p
+		results = append(results, &cp)
+		p = pending.PendingUpdate{}
+		statusStr = ""
+		gid = gocql.UUID{}
+	}
+
+	if err := iter.Close(); err != nil {
+		return nil, fmt.Errorf("querying pending updates: %w", err)
+	}
+
+	return results, nil
+}
+
 func (r *pendingRepository) UpdateStatus(token uuid.UUID, status pending.UpdateStatus) error {
 	return r.session.Query(`UPDATE pending_updates SET status = ? WHERE auth_token = ?`,
 		string(status), gocql.UUID(token)).Exec()
